@@ -1,0 +1,52 @@
+module humanoid_mpc_msgs {
+  module msg {
+    /**
+     * Command for waypoint-based motion
+     * Robot will move from current position to target waypoint
+     */
+    @TypeCode(type = "humanoid_mpc_msgs::msg::dds_::WaypointCommand_") struct WaypointCommand {
+      /**
+       * Target position x in global frame [m]
+       */
+      double target_x;
+
+      /**
+       * Target position y in global frame [m]
+       */
+      double target_y;
+
+      /**
+       * Target position z (height) in global frame [m]
+       */
+      double target_z;
+
+      /**
+       * Target yaw angle in global frame [rad]
+       */
+      double target_yaw;
+
+      /**
+       * Target pitch angle in global frame [rad]
+       */
+      /*double target_pitch;*/
+
+      /**
+       * Target roll angle in global frame [rad]
+       */
+      /*double target_roll;*/
+
+      /**
+       * Time to reach the waypoint [s]
+       * If 0.0, will be estimated automatically
+       */
+      double time_to_reach;
+
+      /**
+       * Motion type: "waypoint", "jump", "backflip"
+       * Default: "waypoint"
+       */
+      string motion_type;
+    };
+  };
+};
+

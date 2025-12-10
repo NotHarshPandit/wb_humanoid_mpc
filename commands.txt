@@ -1,0 +1,13 @@
+docker exec -it wb-mpc-dev bash
+
+source install/setup.bash
+
+colcon build --packages-select remote_control
+
+ros2 run remote_control waypoint_publisher
+
+make launch-wb-g1-dummy-sim
+
+make build-all
+
+ros2 run remote_control plot_contact_forces
