@@ -153,12 +153,12 @@ ros2 run remote_control plot_contact_forces
 ```
 
 
-To plot the commanded waypoints,run:
+To plot the commanded waypoints, run:
 ```
 ros2 run remote_control plot_waypoints
 ```
 
-To plot the robot's base position,run:
+To plot the robot's base position, run:
 ```
 ros2 run remote_control plot_base_coordinates
 ```
