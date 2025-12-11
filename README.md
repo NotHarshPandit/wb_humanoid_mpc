@@ -1,29 +1,4 @@
-# Whole-Body Humanoid MPC
-
-This repository contains a Whole-Body Nonlinear Model Predictive Controller (NMPC) for humanoid loco-manipulation control. This approach enables to directly optimize through the **full-order torque-level dynamics in realtime** to generate a wide range of humanoid behaviors building up on an [extended & updated version of ocs2](https://github.com/manumerous/ocs2_ros2)
-
-**Interactive Velocity and Base Height Control via Joystick:**
-![Screencast2024-12-16180254-ezgif com-optimize(3)](https://github.com/user-attachments/assets/d4b1f0da-39ca-4ce1-b53c-e1d040abe1be)
-
-
-It contains the following hardware platform agnostic MPC fromulations:
-
-### Centroidal Dynamics MPC
-The centroidal MPC optimizes over the **whole-body kinematics** and the center off mass dynamics, with a choice to either use a single rigid 
-body model or the full centroidal dynamics. This specific approach builds up on the centroidal model in ocs2 by generalizing costs and constraints to a 6 DoF contact among others. I am still working on documenting this. Until then a conscise explanation of the ocs2 centroidal model can be found here [Sleiman et. al., A Unified MPC Framework for Whole-Body Dynamic Locomotion and Manipulation](https://arxiv.org/abs/2103.00946)
-
-### Whole-Body Dynamics MPC
-The **whole-body dynamics** MPC optimized over the contact forces and joint accelerations with the option to compute the joint torques for 
-each step planned accross the horizon. I am still working on documenting and publishing the approach. The most relevant information on the choosen approach can currently be found in [Galliker et al., Bipedal Locomotion with Nonlinear Model Predictive Control:
-Online Gait Generation using Whole-Body Dynamics](http://ames.caltech.edu/galliker2022bipedal.pdf)
-### Robot Examples
-
-The project supports the following robot examples:
-
-- Unitree G1
-- 1X Neo (Comming soon)
-
-## Get Started
+# Getting Started:
 
 ### Setup Colcon Workspace
 
@@ -31,7 +6,7 @@ Create a colcon workspace and clone the repository into the src folder:
 
 ```bash
 mkdir -p humanoid_mpc_ws/src && cd humanoid_mpc_ws/src
-git clone https://github.com/1x-technologies/wb-humanoid-mpc.git
+git clone https://github.com/NotHarshPandit/wb_humanoid_mpc.git
 ```
 
 Then initialize all submodules using:
@@ -119,29 +94,87 @@ Command a desired base velocity and root link height via **Robot Base Controller
 
 ![robot_remote_control](https://github.com/user-attachments/assets/779be1da-97a1-4d0c-8f9b-b9d2df88384f)
 
+#### Making the robot walk
+On one terminal run the following command to open the docker workspace.
+```
+cd humanoid_mpc_ws/src/wb_humanoid_mpc/docker/
+```
 
-## Citing Whole-Body Humanoid MPC
-To cite the Whole-Body Humanoid MPC in your academic research, please consider citing the following web BibTeX entry:
+Run the docker file using: 
+
+```bash
+./launch_wb_mpc.bash 
+```
+
+In the dockerized workspace run:
+```
+cd src/wb_humanoid_mpc/docker/
+```
+
+Then run:
 
 ```
-@misc{wholebodyhumanoidmpcweb,
-   author = {Manuel Yves Galliker},
-   title = {Whole-body Humanoid MPC: Realtime Physics-Based Procedural Loco-Manipulation Planning and Control},
-   howpublished = {https://github.com/1x-technologies/wb_humanoid_mpc},
-   year = {2024}
-}
+make launch-wb-g1-dummy-sim
 ```
+
+After launching, open another terminal and open the same dockerized workspace using:
+
+```
+docker exec -it wb-mpc-dev bash
+```
+
+Initialize ROS 2 using:
+```
+source install/setup.bash
+```
+
+To make the robot walk, use the following commands:
+```
+ros2 run remote_control waypoint_publisher
+```
+
+The robot will start walking. 
+
+To modify how far the robot walks, edit the parameters in 
+```
+remote_control/remote_control/waypoint_publisher.py
+```
+This file defines the waypoint positions; adjusting them will change the robot’s walking distance.
+
+If you want to see the plots, open a third terminal and run:
+
+```
+docker exec -it wb-mpc-dev bash
+```
+
+To plot the contact forces, run:
+```
+ros2 run remote_control plot_contact_forces
+```
+
+
+To plot the commanded waypoints,run:
+```
+ros2 run remote_control plot_waypoints
+```
+
+To plot the robot's base position,run:
+```
+ros2 run remote_control plot_base_coordinates
+```
+
+If you make changes, you can build using two commands:
+
+```
+cd humanoid_mpc_ws/src/wb_humanoid_mpc
+make build-all
+
+cd humanoid_mpc_ws
+colcon build --packages-select remote_control
+```
+
+The project report and youtube video can be found here:
+https://sites.google.com/umich.edu/legged-robot-control-project/home
 
 ## Acknowledgements
-Created and actively maintained by [Manuel Yves Galliker](https://github.com/manumerous).
-
-Special thanks go to [Nicholas Palermo](https://github.com/nicholaspalomo) for implementing the dockerization among other great inputs and contributions. 
-
-This project is founded on the great work of many open-source contributors. I would especially like to acknowledge:
-- [ocs2](https://github.com/leggedrobotics/ocs2)
-- [pinocchio](https://github.com/stack-of-tasks/pinocchio)
-- [hpipm](https://github.com/giaf/hpipm)
-  
-Part of this work was developed during my time at [1X Technologies](https://www.1x.tech/). I would like to kindly thank Eric Jang and Bernt Børnich for supporting the open sourcing of this project. 
-
-Further I would like to thank Michael Purcell, Jesper Smith, Simon Zimmermann, Joel Filho, Paal Arthur Schjelderup Thorseth, Varit (Ohm) Vichathorn, Sjur Grønnevik Wroldsen, Armin Nurkanovic, Charles Khazoom and Farbod Farshidian for the many fruitful discussions, insights, contributions and support. 
+I sincerely thank [Manuel Yves Galliker](https://github.com/manumerous) for the open source project.
